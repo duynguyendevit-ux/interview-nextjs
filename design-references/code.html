@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Syntactic Design System | Interactive Components</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-primary-fixed": "#000000",
+            "on-primary-fixed-variant": "#5e0027",
+            "on-tertiary-fixed": "#003840",
+            "on-tertiary-container": "#004d57",
+            "surface-container-low": "#131313",
+            "tertiary": "#81ecff",
+            "on-tertiary-fixed-variant": "#005762",
+            "secondary": "#feb300",
+            "tertiary-fixed-dim": "#00d4ec",
+            "on-primary": "#620029",
+            "inverse-on-surface": "#565555",
+            "tertiary-container": "#00e3fd",
+            "surface": "#0e0e0e",
+            "tertiary-fixed": "#00e3fd",
+            "surface-container-highest": "#262626",
+            "on-secondary-fixed": "#483000",
+            "inverse-primary": "#bd0055",
+            "surface-dim": "#0e0e0e",
+            "primary-container": "#ff7198",
+            "on-secondary": "#523700",
+            "primary-fixed-dim": "#ff5389",
+            "inverse-surface": "#fcf9f8",
+            "outline": "#767575",
+            "on-secondary-container": "#fff6ee",
+            "tertiary-dim": "#00d4ec",
+            "on-error": "#490006",
+            "surface-container-lowest": "#000000",
+            "on-secondary-fixed-variant": "#6c4a00",
+            "surface-tint": "#ff8aa7",
+            "background": "#0e0e0e",
+            "on-error-container": "#ffa8a3",
+            "surface-container-high": "#20201f",
+            "primary-fixed": "#ff7198",
+            "primary": "#ff8aa7",
+            "outline-variant": "#484847",
+            "on-background": "#ffffff",
+            "error-dim": "#d7383b",
+            "secondary-fixed": "#ffc96f",
+            "surface-container": "#1a1a1a",
+            "error-container": "#9f0519",
+            "on-tertiary": "#005762",
+            "on-surface-variant": "#adaaaa",
+            "secondary-dim": "#eda600",
+            "surface-bright": "#2c2c2c",
+            "on-surface": "#ffffff",
+            "primary-dim": "#ff6c95",
+            "surface-variant": "#262626",
+            "on-primary-container": "#4d001e",
+            "secondary-fixed-dim": "#ffb623",
+            "secondary-container": "#7e5700",
+            "error": "#ff716c"
+          },
+          fontFamily: {
+            "headline": ["Space Grotesk"],
+            "body": ["Manrope"],
+            "label": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+        },
+      },
+    }
+  </script>
+<style>
+    body { font-family: 'Manrope', sans-serif; background-color: #0e0e0e; color: #ffffff; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .headline-font { font-family: 'Space Grotesk', sans-serif; }
+    .label-font { font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0e0e0e; }
+    ::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; }
+  </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar Anchor -->
+<aside class="hidden md:flex flex-col py-8 px-4 gap-y-2 bg-neutral-900 h-screen w-64 border-r border-neutral-800/50 fixed left-0 top-0 z-40">
+<div class="mb-8 px-2">
+<h1 class="text-pink-500 font-bold headline-font text-xl">Syntactic</h1>
+<p class="text-neutral-500 text-xs label-font tracking-widest mt-1">v1.0.4-alpha</p>
+</div>
+<nav class="space-y-1">
+<div class="text-neutral-500 text-[10px] uppercase tracking-[0.2em] px-2 mb-4">Library</div>
+<a class="flex items-center gap-3 px-3 py-2 text-neutral-500 hover:text-neutral-300 transition-all ease-in-out font-medium text-sm" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="dashboard">dashboard</span> Overview
+      </a>
+<a class="flex items-center gap-3 px-3 py-2 text-white bg-neutral-800 rounded-sm shadow-inner transition-all ease-in-out font-medium text-sm" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="input">input</span> Form Elements
+      </a>
+<a class="flex items-center gap-3 px-3 py-2 text-neutral-500 hover:text-neutral-300 transition-all ease-in-out font-medium text-sm" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="navigation">navigation</span> Navigation
+      </a>
+<a class="flex items-center gap-3 px-3 py-2 text-neutral-500 hover:text-neutral-300 transition-all ease-in-out font-medium text-sm" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="notifications">notifications</span> Feedback
+      </a>
+<a class="flex items-center gap-3 px-3 py-2 text-neutral-500 hover:text-neutral-300 transition-all ease-in-out font-medium text-sm" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="layers">layers</span> Overlays
+      </a>
+</nav>
+<div class="mt-auto px-2">
+<button class="w-full py-2.5 bg-gradient-to-r from-primary to-primary-container text-on-primary-fixed font-bold rounded-sm text-sm active:scale-95 duration-200">
+        New Component
+      </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 bg-background min-h-screen">
+<!-- TopAppBar Anchor -->
+<header class="fixed top-0 w-full z-50 bg-neutral-950/80 backdrop-blur-xl shadow-2xl shadow-black/40">
+<div class="flex items-center justify-between px-6 h-16 w-full max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-bold tracking-tighter text-white headline-font">Syntactic</span>
+<nav class="hidden lg:flex items-center gap-6 font-['Space_Grotesk'] tracking-tight">
+<a class="text-neutral-400 hover:text-neutral-100 transition-colors text-sm" href="#">Docs</a>
+<a class="text-pink-400 border-b-2 border-pink-500 pb-1 text-sm" href="#">Components</a>
+<a class="text-neutral-400 hover:text-neutral-100 transition-colors text-sm" href="#">Patterns</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center bg-neutral-900/50 rounded-sm px-3 py-1.5 border border-outline-variant/15">
+<span class="material-symbols-outlined text-neutral-500 text-sm mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm text-white w-48" placeholder="Quick search..." type="text"/>
+<span class="text-[10px] text-neutral-600 bg-neutral-950 px-1.5 py-0.5 rounded border border-neutral-800">⌘K</span>
+</div>
+<button class="material-symbols-outlined text-neutral-400 hover:bg-neutral-800/50 p-2 rounded-sm transition-all active:scale-95" data-icon="settings">settings</button>
+<button class="material-symbols-outlined text-neutral-400 hover:bg-neutral-800/50 p-2 rounded-sm transition-all active:scale-95" data-icon="account_circle">account_circle</button>
+</div>
+</div>
+</header>
+<div class="pt-24 pb-20 px-6 max-w-6xl mx-auto">
+<!-- Section: Search Menus -->
+<section class="mb-20">
+<div class="flex flex-col mb-8">
+<h2 class="text-4xl font-bold headline-font tracking-tight mb-2">Search Menus</h2>
+<p class="text-on-surface-variant max-w-2xl">Advanced query systems with contextual categorization, result highlighting, and glassmorphic elevations.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+<!-- Active Search State -->
+<div class="surface-container rounded-lg p-6 relative">
+<div class="flex items-center gap-3 bg-surface-container-high p-4 rounded-sm border border-outline-variant/20 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="manage_search">manage_search</span>
+<input class="bg-transparent border-none focus:ring-0 text-lg headline-font font-medium w-full text-white" type="text" value="Code"/>
+<span class="material-symbols-outlined text-neutral-500 cursor-pointer" data-icon="close">close</span>
+</div>
+<!-- Dropdown Result List -->
+<div class="bg-surface-bright/60 backdrop-blur-xl rounded-sm border border-outline-variant/15 overflow-hidden shadow-2xl">
+<div class="px-4 py-2 bg-surface-container-highest flex items-center justify-between">
+<span class="text-[10px] label-font font-bold tracking-widest text-on-surface-variant uppercase">3 matches found</span>
+</div>
+<div class="flex flex-col">
+<!-- Result Item 1 -->
+<div class="p-4 hover:bg-primary/10 group cursor-pointer border-b border-outline-variant/5">
+<div class="flex justify-between items-start mb-1">
+<span class="text-sm font-bold text-white group-hover:text-primary transition-colors"><span class="bg-primary/20 text-primary px-0.5 rounded">Code</span> Snippets Library</span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant">Patterns</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Browse the collection of reusable <span class="text-primary font-medium">code</span> components and UI blocks.</p>
+</div>
+<!-- Result Item 2 -->
+<div class="p-4 hover:bg-primary/10 group cursor-pointer border-b border-outline-variant/5">
+<div class="flex justify-between items-start mb-1">
+<span class="text-sm font-bold text-white group-hover:text-primary transition-colors">VS <span class="bg-primary/20 text-primary px-0.5 rounded">Code</span> Extensions</span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant">Setup</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Official extension packs for enhanced <span class="text-primary font-medium">code</span> linting and syntax highlighting.</p>
+</div>
+<!-- Result Item 3 -->
+<div class="p-4 hover:bg-primary/10 group cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="text-sm font-bold text-white group-hover:text-primary transition-colors">Clean <span class="bg-primary/20 text-primary px-0.5 rounded">Code</span> Architecture</span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant">Best Practices</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Standardizing <span class="text-primary font-medium">code</span> structure across the ecosystem.</p>
+</div>
+</div>
+<div class="p-3 bg-surface-container-low flex items-center gap-2 border-t border-outline-variant/10">
+<span class="material-symbols-outlined text-xs text-neutral-500" data-icon="keyboard_return">keyboard_return</span>
+<span class="text-[10px] label-font text-neutral-500">Press enter to select</span>
+</div>
+</div>
+</div>
+<!-- Documentation Details -->
+<div class="space-y-6 lg:pl-10">
+<div class="bg-surface-container-high/50 p-6 rounded-sm border-l-4 border-primary">
+<h4 class="headline-font font-bold mb-2 text-white">Interactive State: Focus</h4>
+<p class="text-sm text-on-surface-variant mb-4">The search dropdown leverages glassmorphism with a `blur-xl` and `surface-bright` opacity mix. Use radial highlights for matching string segments.</p>
+<div class="flex gap-2">
+<div class="px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-[10px] text-primary label-font font-bold tracking-tighter">HIGHLIGHT: #ff8aa7</div>
+<div class="px-3 py-1 bg-surface-bright border border-outline-variant/20 rounded-full text-[10px] text-on-surface-variant label-font font-bold tracking-tighter">BLUR: 24px</div>
+</div>
+</div>
+<img class="w-full h-48 object-cover rounded shadow-lg grayscale hover:grayscale-0 transition-all duration-500" data-alt="Close up of a computer screen with syntax highlighted lines of code in a dark mode theme IDE" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSJb9SLZBJPkuEn9k0N8cp07_DjAJqXGXSTTD5w1hlyYtZTiOsgOsT4Of6Fk-xUXMr3ZMKHGA4tixmqLPoZbMrpD17H4UK1KkL6pGX5dkmILMMl8F5dPveshP0euLxzGa-ns6RQABGYCeWBOvss5ohkKSbgU0GF8Fp3oeyFQtdthSy5e4IahYZIVPr7Fv-00RyxrBhA4WOk77fuyQnBpcgfuctdxMnGyAHXOZ9bvFzaVs2WlT4wYeWTCC2Pwym9-FZgR-oY8XaSI5n"/>
+</div>
+</div>
+</section>
+<!-- Section: Checklists -->
+<section class="mb-20">
+<div class="flex flex-col mb-8">
+<h2 class="text-4xl font-bold headline-font tracking-tight mb-2">Checklists</h2>
+<p class="text-on-surface-variant max-w-2xl">From minimal utility lists to rich multi-select cards featuring complex meta-data and active states.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Standard & Atomic States -->
+<div>
+<h3 class="headline-font text-lg font-bold text-white mb-6 flex items-center gap-2">
+<span class="w-8 h-[1px] bg-primary"></span> Atomic States
+            </h3>
+<div class="space-y-4 surface-container p-8 rounded-sm">
+<!-- Unchecked -->
+<label class="flex items-center gap-4 cursor-pointer group">
+<div class="w-6 h-6 border-2 border-outline-variant rounded-sm group-hover:border-primary transition-colors flex items-center justify-center"></div>
+<span class="text-on-surface-variant group-hover:text-white transition-colors">Default State</span>
+</label>
+<!-- Checked -->
+<label class="flex items-center gap-4 cursor-pointer group">
+<div class="w-6 h-6 bg-gradient-to-br from-primary to-primary-container rounded-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-fixed text-lg font-bold" data-icon="check" data-weight="fill">check</span>
+</div>
+<span class="text-white font-medium">Active Checked State</span>
+</label>
+<!-- Indeterminate -->
+<label class="flex items-center gap-4 cursor-pointer group">
+<div class="w-6 h-6 border-2 border-primary rounded-sm flex items-center justify-center">
+<div class="w-3 h-0.5 bg-primary"></div>
+</div>
+<span class="text-white">Indeterminate State</span>
+</label>
+<!-- Disabled -->
+<label class="flex items-center gap-4 cursor-not-allowed opacity-40">
+<div class="w-6 h-6 border-2 border-outline-variant rounded-sm bg-surface-container-lowest"></div>
+<span class="text-on-surface-variant">Disabled Option</span>
+</label>
+</div>
+</div>
+<!-- Card-Based Multi-Select -->
+<div>
+<h3 class="headline-font text-lg font-bold text-white mb-6 flex items-center gap-2">
+<span class="w-8 h-[1px] bg-secondary"></span> Selection Cards
+            </h3>
+<div class="grid grid-cols-1 gap-4">
+<!-- Selected Card -->
+<div class="bg-surface-container p-5 rounded-sm border border-primary/40 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-2">
+<div class="w-6 h-6 bg-primary rounded-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-fixed text-lg" data-icon="check">check</span>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="headline-font font-bold text-primary mb-1">Advanced Mode</span>
+<p class="text-xs text-on-surface-variant">Enable experimental features and deep analysis tools.</p>
+</div>
+<div class="absolute -bottom-4 -left-4 w-16 h-16 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors"></div>
+</div>
+<!-- Unselected Card -->
+<div class="bg-surface-container p-5 rounded-sm border border-outline-variant/10 hover:bg-surface-container-high transition-colors cursor-pointer group relative">
+<div class="absolute top-0 right-0 p-2">
+<div class="w-6 h-6 border-2 border-outline-variant rounded-sm group-hover:border-on-surface-variant transition-colors"></div>
+</div>
+<div class="flex flex-col">
+<span class="headline-font font-bold text-white mb-1 group-hover:text-primary transition-colors">Beginner Access</span>
+<p class="text-xs text-on-surface-variant">Standard feature set for personal experimentation.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Select Options -->
+<section>
+<div class="flex flex-col mb-8">
+<h2 class="text-4xl font-bold headline-font tracking-tight mb-2">Select Options</h2>
+<p class="text-on-surface-variant max-w-2xl">Elegant dropdown controls featuring high-contrast typography, clear removal actions, and persistent status indicators.</p>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+<!-- Default State -->
+<div class="space-y-4">
+<span class="text-[10px] label-font font-bold tracking-widest text-on-surface-variant uppercase px-2">Default Input</span>
+<div class="surface-container p-6 rounded-sm border border-outline-variant/10 flex items-center justify-between group cursor-pointer hover:border-outline transition-colors">
+<div class="flex flex-col">
+<span class="text-[10px] text-neutral-500 font-bold mb-1">DATA SOURCE</span>
+<span class="text-sm font-medium text-white">Select a source...</span>
+</div>
+<span class="material-symbols-outlined text-neutral-500 group-hover:text-primary transition-colors" data-icon="unfold_more">unfold_more</span>
+</div>
+</div>
+<!-- Open State -->
+<div class="space-y-4 relative z-10">
+<span class="text-[10px] label-font font-bold tracking-widest text-on-surface-variant uppercase px-2">Open Menu</span>
+<div class="surface-container p-6 rounded-sm border-2 border-primary flex items-center justify-between mb-2">
+<div class="flex flex-col">
+<span class="text-[10px] text-primary font-bold mb-1">DATA SOURCE</span>
+<span class="text-sm font-medium text-white">Database</span>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="expand_less">expand_less</span>
+</div>
+<!-- Menu -->
+<div class="absolute w-full mt-2 bg-surface-container-highest rounded-sm border border-outline-variant/20 shadow-2xl overflow-hidden py-1">
+<div class="px-4 py-3 hover:bg-surface-bright flex items-center justify-between cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" data-icon="cloud">cloud</span>
+<span class="text-sm text-white">Cloud Storage</span>
+</div>
+</div>
+<div class="px-4 py-3 bg-primary/10 flex items-center justify-between cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="database">database</span>
+<span class="text-sm text-primary font-bold">Local Database</span>
+</div>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span>
+</div>
+<div class="px-4 py-3 hover:bg-surface-bright flex items-center justify-between cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="api">api</span>
+<span class="text-sm text-white">External API</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Selected State with Action -->
+<div class="space-y-4">
+<span class="text-[10px] label-font font-bold tracking-widest text-on-surface-variant uppercase px-2">Active Choice</span>
+<div class="bg-surface-container p-6 rounded-sm border border-outline-variant/10 flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="hub">hub</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] text-neutral-500 font-bold mb-1">CONNECTED NODE</span>
+<span class="text-sm font-bold text-white headline-font tracking-tight">Mainframe_v2_Beta</span>
+</div>
+</div>
+<button class="px-3 py-1.5 bg-surface-container-lowest border border-outline-variant/20 rounded-sm text-[10px] text-error font-bold hover:bg-error/10 hover:border-error/30 transition-all flex items-center gap-2">
+                 REMOVE <span class="material-symbols-outlined text-xs" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Spacer for Floating Effects -->
+<div class="h-32"></div>
+</div>
+</main>
+<!-- Navigation Shell (Bottom for Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-neutral-950/90 backdrop-blur-lg border-t border-outline-variant/10 flex justify-around py-4 z-50">
+<button class="flex flex-col items-center gap-1 text-neutral-500">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] label-font">Overview</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-pink-400">
+<span class="material-symbols-outlined" data-icon="input" style="font-variation-settings: 'FILL' 1;">input</span>
+<span class="text-[10px] label-font font-bold">Forms</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-neutral-500">
+<span class="material-symbols-outlined" data-icon="navigation">navigation</span>
+<span class="text-[10px] label-font">Nav</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-neutral-500">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="text-[10px] label-font">Feedback</span>
+</button>
+</nav>
+</body></html>

@@ -1,0 +1,319 @@
+'use client'
+
+import { useState, useCallback } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useSession, signOut } from 'next-auth/react'
+
+interface NavItem {
+  icon: string
+  label: string
+  href: string
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { icon: '📊', label: 'Dashboard', href: '/dashboard' },
+  { icon: '📝', label: 'Questions', href: '/' },
+  { icon: '🗺️', label: 'Roadmaps', href: '/roadmaps' },
+  { icon: '💻', label: 'Mock Exams', href: '/exams' },
+  { icon: '🤖', label: 'AI Management', href: '/ai' },
+  { icon: '✓', label: 'Curator Portal', href: '/admin' },
+]
+
+export default function Navigation() {
+  const pathname = usePathname()
+  const { data: session } = useSession()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [showLoginModal, setShowLoginModal] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false)
+
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen(prev => !prev)
+  }, [])
+
+  const handleLogout = useCallback(() => {
+    signOut()
+    setShowUserMenu(false)
+  }, [])
+
+  return (
+    <>
+      {/* Top Navigation Bar */}
+      <nav className="fixed top-0 w-full z-50 bg-[#0e0e0e]/80 backdrop-blur-xl border-b border-white/5 h-16 px-6 shadow-2xl shadow-[#ff8aa7]/5">
+        <div className="flex justify-between items-center h-full max-w-[1920px] mx-auto">
+          {/* Left: Logo + Desktop Nav */}
+          <div className="flex items-center gap-8">
+            <Link href="/" className="text-2xl font-bold tracking-tighter text-[#ff8aa7] font-space-grotesk">
+              Technical Curator
+            </Link>
+            <div className="hidden md:flex gap-6 items-center">
+              <Link href="/" className="text-[#adaaaa] font-space-grotesk tracking-tight hover:text-[#ff8aa7] transition-colors">
+                Explorer
+              </Link>
+              <Link href="#" className="text-[#adaaaa] font-space-grotesk tracking-tight hover:text-[#ff8aa7] transition-colors">
+                Resources
+              </Link>
+            </div>
+          </div>
+
+          {/* Right: Actions */}
+          <div className="flex items-center gap-4">
+            {/* Mobile Menu Button */}
+            <button 
+              onClick={toggleSidebar}
+              className="md:hidden text-[#adaaaa] hover:text-[#ff8aa7] transition-colors"
+            >
+              <span className="text-2xl">☰</span>
+            </button>
+
+            {/* Desktop Actions */}
+            <button className="hidden md:block text-[#adaaaa] hover:text-[#ff8aa7] transition-colors active:scale-95 duration-200">
+              <span className="text-xl">🔔</span>
+            </button>
+            <button className="hidden md:block text-[#adaaaa] hover:text-[#ff8aa7] transition-colors active:scale-95 duration-200">
+              <span className="text-xl">⚙️</span>
+            </button>
+            
+            {/* User Avatar / Login */}
+            <div className="relative">
+              {session ? (
+                <>
+                  <button 
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="h-8 w-8 rounded-sm bg-[#20201f] border border-white/10 flex items-center justify-center overflow-hidden hover:border-[#ff8aa7] transition-colors"
+                  >
+                    <span className="text-sm">👤</span>
+                  </button>
+                  
+                  {/* User Menu Dropdown */}
+                  {showUserMenu && (
+                    <>
+                      <div 
+                        className="fixed inset-0 z-40"
+                        onClick={() => setShowUserMenu(false)}
+                      />
+                      <div className="absolute right-0 top-12 w-64 bg-[#1a1a1a] border border-white/10 rounded-sm shadow-2xl z-50">
+                        <div className="p-4 border-b border-white/10">
+                          <p className="text-white font-bold font-space-grotesk">{session.user.name}</p>
+                          <p className="text-xs text-[#adaaaa] font-inter uppercase tracking-widest mt-1">
+                            {session.user.role}
+                          </p>
+                        </div>
+                        <div className="p-2">
+                          <Link 
+                            href="/admin"
+                            onClick={() => setShowUserMenu(false)}
+                            className="flex items-center gap-3 px-4 py-3 text-[#adaaaa] hover:text-white hover:bg-white/5 rounded-sm transition-all"
+                          >
+                            <span>⚙️</span>
+                            Admin Panel
+                          </Link>
+                          <button 
+                            onClick={handleLogout}
+                            className="w-full flex items-center gap-3 px-4 py-3 text-[#ff8aa7] hover:bg-[#ff8aa7]/10 rounded-sm transition-all"
+                          >
+                            <span>🚪</span>
+                            Sign Out
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <button 
+                  onClick={() => setShowLoginModal(true)}
+                  className="h-8 w-8 rounded-sm bg-[#20201f] border border-white/10 flex items-center justify-center overflow-hidden hover:border-[#ff8aa7] transition-colors"
+                >
+                  <span className="text-sm">👤</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Side Navigation Bar */}
+      <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed left-0 top-0 h-screen w-64 border-r border-white/5 bg-[#0e0e0e] z-[45] transition-transform pt-16`}>
+        <div className="flex flex-col h-full pb-6 font-manrope font-medium text-sm">
+          {/* Header */}
+          <div className="px-6 mb-8 pt-4">
+            <h2 className="font-space-grotesk font-bold text-[#ff8aa7] text-lg">The Curator</h2>
+            <p className="text-[#adaaaa] text-xs uppercase tracking-widest">Technical Intelligence</p>
+          </div>
+
+          {/* Navigation Items */}
+          <nav className="flex-1 space-y-1 px-2">
+            {NAV_ITEMS.map((item) => {
+              const isActive = pathname === item.href
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-sm transition-all duration-300 ${
+                    isActive
+                      ? 'text-[#ff8aa7] bg-[#ff8aa7]/10 border-r-2 border-[#ff8aa7]'
+                      : 'text-[#adaaaa] hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <span className="text-lg">{item.icon}</span>
+                  {item.label}
+                </Link>
+              )
+            })}
+          </nav>
+
+          {/* Submit Button */}
+          <div className="px-4 mt-6">
+            <button className="w-full py-3 bg-gradient-to-r from-[#ff8aa7] to-[#ff6c95] text-black rounded-sm font-bold text-xs uppercase tracking-wider hover:brightness-110 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,138,167,0.3)]">
+              Submit Question
+            </button>
+          </div>
+
+          {/* Bottom Links */}
+          <div className="mt-auto border-t border-white/5 pt-4 space-y-1 px-2">
+            <Link href="#" className="flex items-center gap-3 px-4 py-3 text-[#adaaaa] hover:text-white hover:bg-white/5 transition-all duration-300">
+              <span className="text-lg">❓</span>
+              Support
+            </Link>
+            <Link href="#" className="flex items-center gap-3 px-4 py-3 text-[#adaaaa] hover:text-white hover:bg-white/5 transition-all duration-300">
+              <span className="text-lg">📄</span>
+              Documentation
+            </Link>
+          </div>
+        </div>
+      </aside>
+
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/50 z-30 backdrop-blur-sm"
+          onClick={toggleSidebar}
+        />
+      )}
+
+      {/* Login Modal */}
+      {showLoginModal && (
+        <LoginModal onClose={() => setShowLoginModal(false)} />
+      )}
+    </>
+  )
+}
+
+function LoginModal({ onClose }: { onClose: () => void }) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+
+    try {
+      const { signIn } = await import('next-auth/react')
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
+
+      if (result?.error) {
+        setError('Invalid credentials')
+      } else {
+        onClose()
+        window.location.reload()
+      }
+    } catch (err) {
+      setError('Login failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+        onClick={onClose}
+      />
+
+      {/* Modal */}
+      <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-[#1a1a1a] rounded-sm z-50 p-8 border border-white/10">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-black font-space-grotesk text-white uppercase">
+            Sign In
+          </h2>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center bg-[#20201f] rounded-sm hover:bg-[#2c2c2c] transition-all text-white text-xl"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 p-3 bg-[#ff8aa7]/10 border border-[#ff8aa7] rounded-sm">
+            <p className="text-[#ff8aa7] text-sm font-medium">{error}</p>
+          </div>
+        )}
+
+        {/* Form */}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-xs font-bold font-inter uppercase tracking-widest text-[#adaaaa] mb-2">
+              Username / Email
+            </label>
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full bg-[#20201f] border border-white/10 text-white px-4 py-3 rounded-sm font-manrope focus:outline-none focus:ring-2 focus:ring-[#ff8aa7] focus:border-transparent"
+              placeholder="admin"
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold font-inter uppercase tracking-widest text-[#adaaaa] mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full bg-[#20201f] border border-white/10 text-white px-4 py-3 rounded-sm font-manrope focus:outline-none focus:ring-2 focus:ring-[#ff8aa7] focus:border-transparent"
+              placeholder="••••••••"
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <label className="flex items-center gap-2 text-[#adaaaa] cursor-pointer">
+              <input type="checkbox" className="rounded-sm bg-[#20201f] border-white/10 text-[#ff8aa7] focus:ring-[#ff8aa7]" disabled={loading} />
+              Remember me
+            </label>
+            <a href="#" className="text-[#ff8aa7] hover:text-[#ff6c95] transition-colors">
+              Forgot password?
+            </a>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 bg-gradient-to-r from-[#ff8aa7] to-[#ff6c95] text-black font-bold font-space-grotesk uppercase tracking-wider text-sm rounded-sm hover:brightness-110 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,138,167,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Signing In...' : 'Sign In'}
+          </button>
+        </form>
+      </div>
+    </>
+  )
+}
