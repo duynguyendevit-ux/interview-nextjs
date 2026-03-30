@@ -155,6 +155,36 @@ export async function GET(
         text: 'Spring Boot production scenario: HashMap not thread-safe - fix?',
         level: 'advanced',
         answer: 'Problem:\n- Multiple threads updating HashMap\n- Data loss, inconsistency\n- Possible infinite loops (older Java)\n\nSolutions:\n1. ConcurrentHashMap: Thread-safe, best performance\n2. Collections.synchronizedMap(): Synchronized wrapper\n3. Hashtable: Legacy, slower (synchronized methods)\n\nBest practice:\nConcurrentHashMap map = new ConcurrentHashMap<>();\n\nWhy ConcurrentHashMap wins:\n- Lock striping (segment-level locking)\n- Better concurrency than synchronized\n- No locking for reads'
+      },
+      {
+        id: 26,
+        text: 'Tại sao retry mechanism đôi khi làm tình hình tệ hơn? Giải thích thundering herd.',
+        level: 'advanced',
+        answer: 'Problem: @Retryable không có jitter → tất cả clients retry cùng lúc\n→ Thundering herd: hàng nghìn requests đồng loạt đánh vào service đang fail\n\nSolutions:\n1. Exponential backoff + jitter (random delay)\n2. Circuit breaker (Resilience4j):\n   - OPEN state: Fail fast, không retry\n   - HALF_OPEN: Test recovery\n   - CLOSED: Normal operation\n3. Bulkheads: Isolate failures\n4. Rate limiting upstream\n\nReal scenario: "Retries amplified partial outage → total meltdown vì quên jitter"\n\nConfig example:\n@Retry(name = "backend", fallbackMethod = "fallback")\n@CircuitBreaker(name = "backend")\nresilience4j.retry.configs.default.waitDuration=1s\nresilience4j.retry.configs.default.enableRandomizedWait=true'
+      },
+      {
+        id: 27,
+        text: 'Virtual threads (Java 21+) tốt cho performance, nhưng khi nào chúng làm hại? Giải thích thread pinning.',
+        level: 'advanced',
+        answer: 'Virtual Threads (Java 21+):\n- Spawn millions without platform thread overhead\n- Perfect for I/O-bound work\n\nPinning Problem:\n- Happens when blocking inside synchronized blocks or native calls\n- Thread.sleep() in synchronized method pins carrier thread\n- Defeats the purpose of virtual threads\n\nWhen NOT to use:\n- CPU-bound work (use platform threads)\n- Inside synchronized blocks\n- Native method calls\n\nDebug pinning:\n-Djdk.tracePinnedThreads=full\n\nBest practice:\n- Use ReentrantLock instead of synchronized\n- Monitor with JFR (Java Flight Recorder)\n- Use for I/O: HTTP calls, DB queries, file operations'
+      },
+      {
+        id: 28,
+        text: 'GC đã tuned nhưng vẫn có 500ms pause mỗi 10 phút dưới high load. Debug như thế nào?',
+        level: 'advanced',
+        answer: 'Problem: Young GC pause 500ms chỉ xảy ra under load\n\nDebug steps:\n1. Enable GC logs: -Xlog:gc*\n2. Safepoint traces: -XX:+PrintSafepointStatistics\n3. Heap dump live objects: jcmd <pid> GC.heap_dump_live\n4. Correlate with allocation rate spikes\n\nCommon culprits:\n- Object pooling gone wrong\n- String concatenation in hot loops (use StringBuilder)\n- Large arrays allocated frequently\n- Finalizers blocking GC\n\nSolutions:\n- Switch to ZGC/Shenandoah for low-pause (<10ms)\n- Reduce allocation rate\n- Use -XX:MaxGCPauseMillis=200 (G1 target)\n- Monitor with Micrometer + Prometheus\n\nReal fix: "Found String concat in loop → 10x allocation rate → switched to StringBuilder"'
+      },
+      {
+        id: 29,
+        text: 'Spring Boot app leak connections dưới high load dù dùng HikariCP. Tại sao và fix thế nào?',
+        level: 'advanced',
+        answer: 'Common causes:\n1. Transactions never commit:\n   - Unchecked exceptions swallow rollback\n   - @Transactional missing or wrong propagation\n   \n2. Async methods misconfigured:\n   - @Async without @EnableAsync\n   - Wrong thread pool for transactions\n\n3. Long-running queries holding connections\n\nDetection:\nspring.datasource.hikari.leakDetectionThreshold=2000 (dev)\nspring.datasource.hikari.connectionTimeout=30000\nspring.datasource.hikari.maxLifetime=1800000\n\nMonitoring:\n- Micrometer + Prometheus: hikaricp_connections_active\n- Actuator: /actuator/metrics/hikaricp.connections\n\nFix checklist:\n✓ Always use try-with-resources for manual connections\n✓ Set proper transaction timeout\n✓ Use @Transactional(timeout = 30)\n✓ Monitor active connections in production\n✓ Set max pool size based on load testing'
+      },
+      {
+        id: 30,
+        text: 'Payment endpoint bị retry bởi gateway. Làm thế nào prevent double charging?',
+        level: 'advanced',
+        answer: 'Problem: Gateway retries → duplicate payment charges\n\nSolution: Idempotency Keys\n\nImplementation:\n1. Client sends unique idempotency key (UUID) in header\n2. Store key + outcome in DB with UNIQUE constraint\n3. Check before processing:\n   - Key exists + SUCCESS → return cached result\n   - Key exists + PROCESSING → wait/retry\n   - Key not exists → process payment\n\nSchema:\nCREATE TABLE idempotency_keys (\n  key VARCHAR(255) PRIMARY KEY,\n  status VARCHAR(20),\n  response TEXT,\n  created_at TIMESTAMP\n);\n\nCode:\n@Transactional\npublic PaymentResponse processPayment(String idempotencyKey, PaymentRequest req) {\n  var existing = repo.findByKey(idempotencyKey);\n  if (existing != null) return existing.getResponse();\n  \n  try (var lock = redisson.getLock("payment:" + idempotencyKey)) {\n    lock.lock(5, TimeUnit.SECONDS);\n    var result = paymentGateway.charge(req);\n    repo.save(new IdempotencyRecord(idempotencyKey, result));\n    return result;\n  }\n}\n\nBest practices:\n- TTL on keys (7-30 days)\n- Use Redlock only for critical section (low latency)\n- Return 409 Conflict if key exists with different payload'
       }
     ],
     'oracle': [
