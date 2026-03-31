@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/response'
+import { NextResponse } from 'next/server'
 
 // Proxy to Cloudflare Worker D1 API
 const WORKER_API = 'https://interview-questions-api.dyan79.workers.dev'
