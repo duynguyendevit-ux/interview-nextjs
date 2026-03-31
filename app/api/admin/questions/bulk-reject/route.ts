@@ -1,29 +1,23 @@
 import { NextResponse } from 'next/server'
 
+// Proxy to Cloudflare Worker D1 API
+const WORKER_API = 'https://interview-questions-api.dyan79.workers.dev'
+
 // POST /api/admin/questions/bulk-reject
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { questionIds, reason } = body
     
-    if (!Array.isArray(questionIds) || questionIds.length === 0) {
-      return NextResponse.json(
-        { success: false, message: 'Invalid question IDs' },
-        { status: 400 }
-      )
-    }
-    
-    // TODO: Bulk update database
-    // await db.questions.updateMany(questionIds, { 
-    //   status: 'rejected',
-    //   rejectionReason: reason 
-    // })
-    
-    return NextResponse.json({
-      success: true,
-      message: `${questionIds.length} questions rejected successfully`,
-      count: questionIds.length
+    const response = await fetch(`${WORKER_API}/api/admin/questions/bulk-reject`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
     })
+    
+    const data = await response.json()
+    return NextResponse.json(data, { status: response.status })
   } catch (error) {
     console.error('Bulk reject error:', error)
     return NextResponse.json(
