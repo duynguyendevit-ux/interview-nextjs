@@ -11,11 +11,13 @@ export async function POST(
   try {
     const { id } = await params
     const body = await request.json()
+    const authHeader = request.headers.get('Authorization')
     
     const response = await fetch(`${WORKER_API}/api/admin/questions/${id}/reject`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': authHeader || '',
       },
       body: JSON.stringify(body),
     })
