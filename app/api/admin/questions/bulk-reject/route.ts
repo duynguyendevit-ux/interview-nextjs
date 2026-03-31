@@ -1,51 +1,33 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
 
+// POST /api/admin/questions/bulk-reject
 export async function POST(request: Request) {
-  // Check authentication
-  const session = await getServerSession()
-  if (!session || session.user.role !== 'admin') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-  
-  const body = await request.json()
-  const { questionIds, reason } = body
-  
-  if (!Array.isArray(questionIds) || questionIds.length === 0) {
-    return NextResponse.json(
-      { error: 'Invalid request: questionIds array required' },
-      { status: 400 }
-    )
-  }
-  
   try {
-    // TODO: Bulk reject in database
-    // Example:
-    // await db.questions.updateMany({
-    //   where: { id: { in: questionIds } },
-    //   data: { 
-    //     status: 'rejected',
-    //     rejectedBy: session.user.id,
-    //     rejectedAt: new Date(),
-    //     rejectionReason: reason
-    //   }
+    const body = await request.json()
+    const { questionIds, reason } = body
+    
+    if (!Array.isArray(questionIds) || questionIds.length === 0) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid question IDs' },
+        { status: 400 }
+      )
+    }
+    
+    // TODO: Bulk update database
+    // await db.questions.updateMany(questionIds, { 
+    //   status: 'rejected',
+    //   rejectionReason: reason 
     // })
     
     return NextResponse.json({
       success: true,
       message: `${questionIds.length} questions rejected successfully`,
-      data: {
-        count: questionIds.length,
-        questionIds,
-        rejectedBy: session.user.id,
-        rejectedAt: new Date().toISOString(),
-        reason: reason || null
-      }
+      count: questionIds.length
     })
   } catch (error) {
-    console.error('Error bulk rejecting questions:', error)
+    console.error('Bulk reject error:', error)
     return NextResponse.json(
-      { error: 'Failed to reject questions' },
+      { success: false, message: 'Internal server error' },
       { status: 500 }
     )
   }

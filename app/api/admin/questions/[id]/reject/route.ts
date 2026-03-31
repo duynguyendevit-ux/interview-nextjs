@@ -1,51 +1,29 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
 
+// POST /api/admin/questions/:id/reject
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params
-  
-  // Check authentication
-  const session = await getServerSession()
-  if (!session || session.user.role !== 'admin') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-  
-  // Get rejection reason from body (optional)
-  const body = await request.json().catch(() => ({}))
-  const { reason } = body
-  
   try {
-    // TODO: Update database - mark question as rejected
-    // Example:
-    // await db.questions.update({
-    //   where: { id },
-    //   data: { 
-    //     status: 'rejected',
-    //     rejectedBy: session.user.id,
-    //     rejectedAt: new Date(),
-    //     rejectionReason: reason
-    //   }
+    const { id } = await params
+    const body = await request.json()
+    const { reason } = body
+    
+    // TODO: Update database
+    // await db.questions.update(id, { 
+    //   status: 'rejected',
+    //   rejectionReason: reason 
     // })
     
-    // For now, just return success
     return NextResponse.json({
       success: true,
-      message: `Question ${id} rejected successfully`,
-      data: {
-        id,
-        status: 'rejected',
-        rejectedBy: session.user.id,
-        rejectedAt: new Date().toISOString(),
-        reason: reason || null
-      }
+      message: `Question ${id} rejected successfully`
     })
   } catch (error) {
-    console.error('Error rejecting question:', error)
+    console.error('Reject question error:', error)
     return NextResponse.json(
-      { error: 'Failed to reject question' },
+      { success: false, message: 'Internal server error' },
       { status: 500 }
     )
   }

@@ -1,45 +1,25 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
 
+// POST /api/admin/questions/:id/approve
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params
-  
-  // Check authentication
-  const session = await getServerSession()
-  if (!session || session.user.role !== 'admin') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-  
   try {
-    // TODO: Update database - mark question as approved
-    // Example:
-    // await db.questions.update({
-    //   where: { id },
-    //   data: { 
-    //     status: 'approved',
-    //     approvedBy: session.user.id,
-    //     approvedAt: new Date()
-    //   }
-    // })
+    const { id } = await params
     
-    // For now, just return success
+    // TODO: Update database
+    // await db.questions.update(id, { status: 'approved' })
+    // await db.questions.moveToProduction(id)
+    
     return NextResponse.json({
       success: true,
-      message: `Question ${id} approved successfully`,
-      data: {
-        id,
-        status: 'approved',
-        approvedBy: session.user.id,
-        approvedAt: new Date().toISOString()
-      }
+      message: `Question ${id} approved successfully`
     })
   } catch (error) {
-    console.error('Error approving question:', error)
+    console.error('Approve question error:', error)
     return NextResponse.json(
-      { error: 'Failed to approve question' },
+      { success: false, message: 'Internal server error' },
       { status: 500 }
     )
   }
