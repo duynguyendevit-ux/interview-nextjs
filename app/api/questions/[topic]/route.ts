@@ -815,6 +815,18 @@ export async function GET(
         text: 'Redis Performance Tuning - production tips?',
         level: 'advanced',
         answer: 'Performance tuning tips:\n\n1. Hardware:\n- Fast CPU (single-core performance)\n- Enough RAM (avoid swapping)\n- Fast network\n- SSD cho persistence\n\n2. Configuration:\n- Disable transparent huge pages\n- Set maxmemory và eviction policy\n- Tune persistence (RDB/AOF trade-offs)\n- tcp-backlog, tcp-keepalive\n\n3. Application:\n- Use pipelining cho bulk operations\n- Avoid O(N) commands (KEYS, SMEMBERS large sets)\n- Use SCAN instead of KEYS\n- Connection pooling\n- Lua scripts cho complex operations\n\n4. Monitoring:\n- INFO commandstats: Slow commands\n- SLOWLOG: Track slow queries\n- Monitor memory usage\n- Track evicted keys\n\n5. Scaling:\n- Read replicas\n- Sharding/Clustering\n- Multiple instances'
+      },
+      {
+        id: 21,
+        text: 'In-Memory Cache (Caffeine) vs Redis - khi nào dùng cái nào?',
+        level: 'advanced',
+        answer: 'In-Memory Cache (Caffeine, Guava):\n✅ Lưu trong RAM của application (cùng process)\n✅ Latency: nanoseconds (cực nhanh)\n✅ Đơn giản, không cần infrastructure\n❌ Không share giữa instances\n❌ Mất data khi restart\n❌ Cache inconsistency trong multi-instance\n\nRedis (Distributed Cache):\n✅ Share cache giữa nhiều instances\n✅ Persistence (RDB/AOF)\n✅ Rich data structures, Pub/Sub\n✅ Clustering, replication\n❌ Network latency (milliseconds)\n❌ Cần maintain Redis server\n\nKhi nào dùng In-Memory:\n- Single instance app\n- Cần latency thấp nhất\n- Data có thể temporary\n\nKhi nào dùng Redis:\n- Multi-instance (Kubernetes, load balancer)\n- Cần share sessions/cache\n- Microservices architecture\n\nBest practice: Multi-level caching (L1: Caffeine, L2: Redis)'
+      },
+      {
+        id: 22,
+        text: 'Data nào cần share giữa instances? Ví dụ thực tế?',
+        level: 'advanced',
+        answer: 'Data cần share = Data mà nhiều instances cần thấy consistent:\n\n1. Session Management:\n- User login → Pod 1, request tiếp → Pod 2\n- Cần share: Login sessions, shopping cart, auth tokens\n\n2. Rate Limiting:\n- User gửi 100 req/s → 50 Pod 1, 50 Pod 2\n- Không share → bypass rate limit!\n- Redis counter: Tất cả pods check cùng 1 counter\n\n3. Distributed Lock:\n- 2 pods process cùng 1 order → duplicate!\n- Redis lock: Chỉ 1 pod acquire được\n\n4. Cache Invalidation:\n- Admin update product → Pod 1 evict cache\n- Pod 2, 3, 4 vẫn serve old data!\n- Redis Pub/Sub: Broadcast invalidation\n\n5. Real-time Data:\n- Leaderboards, view counters, online users\n- Feature flags, API response cache\n\n6. Job Queue:\n- Task distribution giữa workers\n\nNếu không share → Inconsistent behavior! 🚨'
       }
     ]
   }
