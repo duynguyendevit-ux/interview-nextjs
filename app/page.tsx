@@ -17,7 +17,8 @@ const TOPICS = [
   { id: 'aws', label: 'AWS Cloud', color: '#FF9900', icon: '☁️' },
   { id: 'angular', label: 'Angular', color: '#DD0031', icon: '🅰️' },
   { id: 'kafka', label: 'Kafka', color: '#231F20', icon: '📨' },
-  { id: 'java', label: 'Java 21', color: '#007396', icon: '☕' }
+  { id: 'java', label: 'Java 21', color: '#007396', icon: '☕' },
+  { id: 'redis', label: 'Redis', color: '#DC382D', icon: '⚡' }
 ] as const
 
 const LEVEL_COLORS = {
