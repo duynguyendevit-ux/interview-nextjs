@@ -694,6 +694,128 @@ export async function GET(
         level: 'intermediate',
         answer: 'Type-safe string interpolation. STR."Hello \\{name}". Prevents injection attacks. Compile-time validation. Better than concatenation.'
       }
+    ],
+    'redis': [
+      {
+        id: 1,
+        text: 'Redis là gì và tại sao nó nhanh?',
+        level: 'basic',
+        answer: 'Redis (Remote Dictionary Server) là in-memory key-value data store:\n- In-memory storage: Dữ liệu lưu trong RAM → cực nhanh (microseconds latency)\n- Single-threaded: Tránh context switching, lock contention\n- Simple data structures: Optimized cho performance\n- I/O multiplexing: Handle nhiều connections hiệu quả\n- Use cases: Cache, session store, real-time analytics, message broker, leaderboards'
+      },
+      {
+        id: 2,
+        text: 'Redis hỗ trợ những data structures nào?',
+        level: 'basic',
+        answer: 'Redis hỗ trợ nhiều data structures:\n- Strings: Binary-safe, max 512MB\n- Lists: Linked lists, O(1) push/pop\n- Sets: Unordered unique strings\n- Sorted Sets: Ordered by score\n- Hashes: Field-value maps\n- Bitmaps: Bit-level operations\n- HyperLogLogs: Probabilistic counting\n- Streams: Log data structure\n- Geospatial: Location-based queries'
+      },
+      {
+        id: 3,
+        text: 'Redis persistence: RDB vs AOF?',
+        level: 'intermediate',
+        answer: 'RDB (Redis Database):\n- Point-in-time snapshots\n- Compact, faster restarts\n- Risk: Mất data giữa 2 snapshots\n- Good for: Backups, disaster recovery\n\nAOF (Append Only File):\n- Log mọi write operations\n- More durable (fsync every second/query)\n- Larger files, slower restarts\n- Good for: Maximum durability\n\nBest practice: Dùng cả 2 (RDB + AOF) cho balance giữa performance và durability'
+      },
+      {
+        id: 4,
+        text: 'Redis Eviction Policies - giải thích các loại?',
+        level: 'intermediate',
+        answer: 'Khi Redis đạt maxmemory, eviction policy quyết định key nào bị xóa:\n- noeviction: Return error, không xóa key\n- allkeys-lru: Xóa least recently used keys (toàn bộ keys)\n- volatile-lru: Xóa LRU keys có TTL\n- allkeys-random: Random xóa keys\n- volatile-random: Random xóa keys có TTL\n- volatile-ttl: Xóa keys có TTL ngắn nhất\n- allkeys-lfu: Xóa least frequently used (Redis 4.0+)\n- volatile-lfu: LFU cho keys có TTL\n\nPhổ biến: allkeys-lru cho cache, noeviction cho database'
+      },
+      {
+        id: 5,
+        text: 'Redis Transactions - MULTI/EXEC hoạt động thế nào?',
+        level: 'intermediate',
+        answer: 'Redis transactions đảm bảo atomicity:\n- MULTI: Bắt đầu transaction\n- Commands: Queue commands\n- EXEC: Execute tất cả commands sequentially\n- DISCARD: Hủy transaction\n\nĐặc điểm:\n- All or nothing: Tất cả commands được execute\n- Isolated: Không có commands khác xen vào\n- No rollback: Nếu 1 command fail, các commands khác vẫn chạy\n- WATCH: Optimistic locking, check key changes\n\nKhác Pipelining: Transactions đảm bảo atomicity, pipelining chỉ giảm network latency'
+      },
+      {
+        id: 6,
+        text: 'Redis Pub/Sub pattern - use cases và limitations?',
+        level: 'intermediate',
+        answer: 'Pub/Sub: Messaging pattern cho real-time communication\n\nCommands:\n- PUBLISH channel message: Gửi message\n- SUBSCRIBE channel: Nhận messages\n- PSUBSCRIBE pattern: Subscribe theo pattern\n\nUse cases:\n- Real-time notifications\n- Chat applications\n- Event broadcasting\n\nLimitations:\n- Fire-and-forget: Không lưu messages\n- No message history: Subscriber offline → mất messages\n- No acknowledgment: Không biết ai nhận được\n\nAlternatives: Redis Streams (persistent, consumer groups, ACK)'
+      },
+      {
+        id: 7,
+        text: 'Redis Cluster vs Sentinel - khác nhau như thế nào?',
+        level: 'advanced',
+        answer: 'Redis Sentinel:\n- High availability cho single master\n- Monitoring, automatic failover\n- Notification khi master down\n- Configuration provider\n- Không scale horizontally\n\nRedis Cluster:\n- Horizontal scaling (sharding)\n- Data partitioned across nodes (16384 hash slots)\n- Automatic failover\n- Multi-master architecture\n- Scale both reads và writes\n\nKhi nào dùng:\n- Sentinel: Single instance, cần HA\n- Cluster: Cần scale, data > RAM của 1 node'
+      },
+      {
+        id: 8,
+        text: 'Redis Pipelining - khi nào và tại sao sử dụng?',
+        level: 'intermediate',
+        answer: 'Pipelining: Gửi nhiều commands cùng lúc, không đợi response từng command\n\nBenefits:\n- Giảm network round-trip time\n- Tăng throughput (có thể đạt 1M ops/sec)\n- Giảm latency cho bulk operations\n\nKhi nào dùng:\n- Bulk inserts/updates\n- Multiple independent operations\n- Không cần kết quả của command trước để chạy command sau\n\nKhông dùng khi:\n- Commands phụ thuộc lẫn nhau\n- Cần atomicity (dùng MULTI/EXEC)\n\nExample: SET key1 val1, SET key2 val2, GET key3 → gửi 1 lần'
+      },
+      {
+        id: 9,
+        text: 'Redis Lua Scripting - use cases và best practices?',
+        level: 'advanced',
+        answer: 'Lua scripts: Execute multiple commands atomically\n\nBenefits:\n- Atomic execution: Không có commands khác xen vào\n- Reduce network overhead: 1 round-trip thay vì nhiều\n- Complex logic: Conditional operations\n\nCommands:\n- EVAL script numkeys key [key ...] arg [arg ...]\n- EVALSHA sha1 numkeys key [key ...] arg [arg ...]\n- SCRIPT LOAD: Cache script\n\nUse cases:\n- Rate limiting\n- Distributed locks\n- Conditional updates (check-and-set)\n- Complex aggregations\n\nBest practices:\n- Keep scripts short (blocking)\n- Use EVALSHA để cache\n- Avoid long-running scripts'
+      },
+      {
+        id: 10,
+        text: 'Redis Sorted Sets - internal implementation và use cases?',
+        level: 'advanced',
+        answer: 'Sorted Sets: Unique elements với scores, ordered by score\n\nInternal implementation:\n- Skip list + Hash table\n- Skip list: O(log N) insert/delete/search\n- Hash table: O(1) score lookup\n\nCommands:\n- ZADD: Add members với scores\n- ZRANGE: Get range by rank\n- ZRANGEBYSCORE: Get range by score\n- ZRANK: Get rank của member\n- ZINCRBY: Increment score\n\nUse cases:\n- Leaderboards (gaming scores)\n- Priority queues\n- Time-series data (score = timestamp)\n- Auto-complete (lexicographic ordering)\n- Rate limiting (sliding window)'
+      },
+      {
+        id: 11,
+        text: 'Redis Memory Optimization - techniques?',
+        level: 'advanced',
+        answer: 'Memory optimization techniques:\n\n1. Use appropriate data structures:\n- Hashes cho objects (memory efficient)\n- Avoid large strings, dùng hashes\n\n2. Encoding optimizations:\n- ziplist: Compact encoding cho small lists/hashes\n- intset: Compact encoding cho integer sets\n- Configure: hash-max-ziplist-entries, list-max-ziplist-size\n\n3. Key naming:\n- Short keys (trade-off với readability)\n- Use namespaces: user:1001:profile\n\n4. Expiration:\n- Set TTL cho temporary data\n- Use eviction policies\n\n5. Compression:\n- Compress large values trước khi store\n- Trade CPU for memory'
+      },
+      {
+        id: 12,
+        text: 'Redis Streams - so sánh với Kafka?',
+        level: 'advanced',
+        answer: 'Redis Streams: Log data structure cho event streaming\n\nFeatures:\n- Append-only log\n- Consumer groups\n- Message acknowledgment\n- Persistence\n- Range queries\n\nCommands:\n- XADD: Add entry\n- XREAD: Read entries\n- XGROUP: Manage consumer groups\n- XACK: Acknowledge messages\n\nRedis Streams vs Kafka:\n- Redis: Simpler, lower latency, smaller scale\n- Kafka: Distributed, higher throughput, better for large-scale\n- Redis: Good cho microservices communication\n- Kafka: Good cho data pipelines, event sourcing\n\nUse Redis Streams khi: Cần simple event streaming, đã dùng Redis, low latency'
+      },
+      {
+        id: 13,
+        text: 'Redis Single-threaded - tại sao và limitations?',
+        level: 'advanced',
+        answer: 'Tại sao single-threaded:\n- Avoid race conditions, locks\n- Simple implementation\n- CPU rarely bottleneck (I/O bound)\n- I/O multiplexing handle nhiều connections\n\nRedis 4.0+: Multi-threaded cho:\n- Background operations (BGSAVE, BGREWRITEAOF)\n- Lazy deletion (UNLINK)\n- Module operations\n\nLimitations:\n- 1 slow command block toàn bộ server\n- Không tận dụng multi-core cho commands\n- Long-running Lua scripts block server\n\nSolutions:\n- Avoid O(N) commands trên large datasets\n- Use SCAN thay vì KEYS\n- Cluster/Sharding để scale\n- Multiple Redis instances trên 1 machine'
+      },
+      {
+        id: 14,
+        text: 'Redis Distributed Lock - implementation với Redlock?',
+        level: 'advanced',
+        answer: 'Distributed lock với Redis:\n\nSimple approach (single instance):\n- SET key value NX PX milliseconds\n- NX: Only set if not exists\n- PX: Expiration time\n- Delete key để unlock\n\nRedlock algorithm (multiple instances):\n1. Get current time\n2. Try acquire lock trên N/2 + 1 instances\n3. Check total time < lock validity\n4. If success: Lock acquired\n5. If fail: Release all locks\n\nBest practices:\n- Use unique value (UUID) để identify lock owner\n- Check value trước khi delete (Lua script)\n- Set reasonable TTL\n- Handle clock drift\n\nAlternatives: Zookeeper, etcd (stronger consistency)'
+      },
+      {
+        id: 15,
+        text: 'Redis vs Memcached - khi nào dùng cái nào?',
+        level: 'intermediate',
+        answer: 'Redis advantages:\n- Rich data structures (lists, sets, sorted sets, hashes)\n- Persistence (RDB, AOF)\n- Pub/Sub messaging\n- Lua scripting\n- Transactions\n- Replication, Sentinel, Cluster\n\nMemcached advantages:\n- Simpler, pure cache\n- Multi-threaded (better multi-core utilization)\n- Slightly faster cho simple key-value\n\nKhi nào dùng Redis:\n- Cần data structures\n- Cần persistence\n- Cần pub/sub, transactions\n- Complex use cases\n\nKhi nào dùng Memcached:\n- Pure caching\n- Simple key-value\n- Multi-threaded performance quan trọng'
+      },
+      {
+        id: 16,
+        text: 'Redis Hashes - khi nào dùng thay vì Strings?',
+        level: 'intermediate',
+        answer: 'Hashes: Field-value maps trong 1 key\n\nCommands:\n- HSET key field value\n- HGET key field\n- HMGET key field [field ...]\n- HGETALL key\n- HINCRBY key field increment\n\nKhi nào dùng Hashes:\n- Store objects với nhiều fields\n- Partial updates (chỉ update 1 field)\n- Memory efficient cho small hashes (ziplist encoding)\n- Namespace cho related data\n\nExample: User profile\n- Hash: HSET user:1001 name "John" age 30 email "john@example.com"\n- String: SET user:1001 "{\\"name\\":\\"John\\",\\"age\\":30}"\n\nHashes better: Partial updates, memory efficient, semantic clarity'
+      },
+      {
+        id: 17,
+        text: 'Redis TTL và Expiration - best practices?',
+        level: 'intermediate',
+        answer: 'TTL (Time To Live): Auto-delete keys sau 1 khoảng thời gian\n\nCommands:\n- EXPIRE key seconds\n- EXPIREAT key timestamp\n- TTL key: Check remaining time\n- PERSIST key: Remove expiration\n- SETEX key seconds value: SET + EXPIRE atomic\n\nExpiration strategies:\n- Passive: Check khi access key\n- Active: Random sample và delete expired keys\n\nBest practices:\n- Set TTL cho cache data\n- Use SETEX thay vì SET + EXPIRE (atomic)\n- Monitor expired keys (INFO stats)\n- Avoid very short TTLs (overhead)\n- Consider eviction policies\n\nUse cases: Session management, cache invalidation, rate limiting'
+      },
+      {
+        id: 18,
+        text: 'Redis Replication - Master-Slave architecture?',
+        level: 'advanced',
+        answer: 'Redis Replication: Copy data từ master sang slaves\n\nFeatures:\n- Asynchronous replication\n- Multiple slaves\n- Slaves can have slaves (cascading)\n- Non-blocking replication\n- Auto-reconnection\n\nReplication process:\n1. Slave gửi SYNC command\n2. Master start BGSAVE (RDB snapshot)\n3. Master buffer new writes\n4. Master gửi RDB file cho slave\n5. Slave load RDB\n6. Master gửi buffered writes\n7. Continuous replication\n\nBenefits:\n- Read scaling (read from slaves)\n- High availability (với Sentinel)\n- Backup\n\nLimitations:\n- Asynchronous: Có thể mất data\n- Write không scale (chỉ master nhận writes)'
+      },
+      {
+        id: 19,
+        text: 'Redis SCAN vs KEYS - tại sao SCAN tốt hơn?',
+        level: 'intermediate',
+        answer: 'KEYS pattern:\n- Block server cho đến khi scan hết\n- O(N) complexity\n- Dangerous trong production (có thể block server vài giây)\n\nSCAN cursor [MATCH pattern] [COUNT count]:\n- Incremental iteration\n- Non-blocking\n- Return cursor + keys\n- Cursor 0 = iteration complete\n- May return duplicates (handle in application)\n\nBest practices:\n- NEVER dùng KEYS trong production\n- Dùng SCAN với reasonable COUNT\n- Handle duplicates\n- Similar commands: SSCAN, HSCAN, ZSCAN\n\nExample:\n```\nCURSOR=0\nwhile true:\n  CURSOR, keys = SCAN CURSOR MATCH user:* COUNT 100\n  process(keys)\n  if CURSOR == 0: break\n```'
+      },
+      {
+        id: 20,
+        text: 'Redis Performance Tuning - production tips?',
+        level: 'advanced',
+        answer: 'Performance tuning tips:\n\n1. Hardware:\n- Fast CPU (single-core performance)\n- Enough RAM (avoid swapping)\n- Fast network\n- SSD cho persistence\n\n2. Configuration:\n- Disable transparent huge pages\n- Set maxmemory và eviction policy\n- Tune persistence (RDB/AOF trade-offs)\n- tcp-backlog, tcp-keepalive\n\n3. Application:\n- Use pipelining cho bulk operations\n- Avoid O(N) commands (KEYS, SMEMBERS large sets)\n- Use SCAN instead of KEYS\n- Connection pooling\n- Lua scripts cho complex operations\n\n4. Monitoring:\n- INFO commandstats: Slow commands\n- SLOWLOG: Track slow queries\n- Monitor memory usage\n- Track evicted keys\n\n5. Scaling:\n- Read replicas\n- Sharding/Clustering\n- Multiple instances'
+      }
     ]
   }
   
