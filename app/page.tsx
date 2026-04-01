@@ -12,6 +12,7 @@ interface Question {
 
 // Hoist static data outside component (rendering-hoist-jsx)
 const TOPICS = [
+  { id: 'algorithms', label: 'Algorithms & DS', color: '#9B59B6', icon: '🧮' },
   { id: 'spring-boot', label: 'Spring Boot', color: '#6DB33F', icon: '☕' },
   { id: 'oracle', label: 'Oracle DB', color: '#F80000', icon: '🗄️' },
   { id: 'aws', label: 'AWS Cloud', color: '#FF9900', icon: '☁️' },
