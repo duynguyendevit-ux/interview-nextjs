@@ -65,7 +65,14 @@ export default function AdminPage() {
       const res = await fetch('/api/admin/pending')
       const data = await res.json()
       // Ensure data is array
-      setQuestions(Array.isArray(data) ? data : [])
+      if (Array.isArray(data)) {
+        setQuestions(data)
+      } else if (data.success === false) {
+        console.error('API error:', data.message)
+        setQuestions([])
+      } else {
+        setQuestions([])
+      }
     } catch (error) {
       console.error('Error loading pending questions:', error)
       setQuestions([])
