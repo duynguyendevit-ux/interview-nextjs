@@ -82,7 +82,15 @@ export default function Navigation() {
                     onClick={() => setShowUserMenu(!showUserMenu)}
                     className="h-8 w-8 rounded-sm bg-[#20201f] border border-white/10 flex items-center justify-center overflow-hidden hover:border-[#ff8aa7] transition-colors"
                   >
-                    <span className="text-sm">👤</span>
+                    {session.user?.image ? (
+                      <img 
+                        src={session.user.image} 
+                        alt={session.user.name || 'User'} 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-sm">👤</span>
+                    )}
                   </button>
                   
                   {/* User Menu Dropdown */}
@@ -94,10 +102,23 @@ export default function Navigation() {
                       />
                       <div className="absolute right-0 top-12 w-64 bg-[#1a1a1a] border border-white/10 rounded-sm shadow-2xl z-50">
                         <div className="p-4 border-b border-white/10">
-                          <p className="text-white font-bold font-space-grotesk">{session.user.name}</p>
-                          <p className="text-xs text-[#adaaaa] font-inter uppercase tracking-widest mt-1">
-                            {session.user.role}
-                          </p>
+                          <div className="flex items-center gap-3 mb-2">
+                            {session.user?.image ? (
+                              <img 
+                                src={session.user.image} 
+                                alt={session.user.name || 'User'} 
+                                className="w-10 h-10 rounded-sm object-cover"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-sm bg-[#20201f] flex items-center justify-center">
+                                <span className="text-lg">👤</span>
+                              </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-white font-bold font-space-grotesk truncate">{session.user?.name}</p>
+                              <p className="text-xs text-[#adaaaa] truncate">{session.user?.email}</p>
+                            </div>
+                          </div>
                         </div>
                         <div className="p-2">
                           <Link 
