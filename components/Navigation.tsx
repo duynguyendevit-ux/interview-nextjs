@@ -12,12 +12,8 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { icon: '📊', label: 'Dashboard', href: '/dashboard' },
   { icon: '📝', label: 'Questions', href: '/' },
-  { icon: '🗺️', label: 'Roadmaps', href: '/roadmaps' },
-  { icon: '💻', label: 'Mock Exams', href: '/exams' },
-  { icon: '🤖', label: 'AI Management', href: '/ai' },
-  { icon: '✓', label: 'Curator Portal', href: '/admin' },
+  { icon: '✓', label: 'Admin Portal', href: '/admin' },
 ]
 
 export default function Navigation() {
@@ -41,19 +37,11 @@ export default function Navigation() {
       {/* Top Navigation Bar */}
       <nav className="fixed top-0 w-full z-50 bg-[#0e0e0e]/80 backdrop-blur-xl border-b border-white/5 h-16 px-6 shadow-2xl shadow-[#ff8aa7]/5">
         <div className="flex justify-between items-center h-full max-w-[1920px] mx-auto">
-          {/* Left: Logo + Desktop Nav */}
-          <div className="flex items-center gap-8">
+          {/* Left: Logo */}
+          <div className="flex items-center">
             <Link href="/" className="text-2xl font-bold tracking-tighter text-[#ff8aa7] font-space-grotesk">
-              Technical Curator
+              Interview Prep
             </Link>
-            <div className="hidden md:flex gap-6 items-center">
-              <Link href="/" className="text-[#adaaaa] font-space-grotesk tracking-tight hover:text-[#ff8aa7] transition-colors">
-                Explorer
-              </Link>
-              <Link href="#" className="text-[#adaaaa] font-space-grotesk tracking-tight hover:text-[#ff8aa7] transition-colors">
-                Resources
-              </Link>
-            </div>
           </div>
 
           {/* Right: Actions */}
@@ -64,14 +52,6 @@ export default function Navigation() {
               className="md:hidden text-[#adaaaa] hover:text-[#ff8aa7] transition-colors"
             >
               <span className="text-2xl">☰</span>
-            </button>
-
-            {/* Desktop Actions */}
-            <button className="hidden md:block text-[#adaaaa] hover:text-[#ff8aa7] transition-colors active:scale-95 duration-200">
-              <span className="text-xl">🔔</span>
-            </button>
-            <button className="hidden md:block text-[#adaaaa] hover:text-[#ff8aa7] transition-colors active:scale-95 duration-200">
-              <span className="text-xl">⚙️</span>
             </button>
             
             {/* User Avatar / Login */}
@@ -184,25 +164,6 @@ export default function Navigation() {
               )
             })}
           </nav>
-
-          {/* Submit Button */}
-          <div className="px-4 mt-6">
-            <button className="w-full py-3 bg-gradient-to-r from-[#ff8aa7] to-[#ff6c95] text-black rounded-sm font-bold text-xs uppercase tracking-wider hover:brightness-110 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,138,167,0.3)]">
-              Submit Question
-            </button>
-          </div>
-
-          {/* Bottom Links */}
-          <div className="mt-auto border-t border-white/5 pt-4 space-y-1 px-2">
-            <Link href="#" className="flex items-center gap-3 px-4 py-3 text-[#adaaaa] hover:text-white hover:bg-white/5 transition-all duration-300">
-              <span className="text-lg">❓</span>
-              Support
-            </Link>
-            <Link href="#" className="flex items-center gap-3 px-4 py-3 text-[#adaaaa] hover:text-white hover:bg-white/5 transition-all duration-300">
-              <span className="text-lg">📄</span>
-              Documentation
-            </Link>
-          </div>
         </div>
       </aside>
 
