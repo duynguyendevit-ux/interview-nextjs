@@ -51,16 +51,20 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1)
   const PAGE_SIZE = 25
 
-  const loadQuestions = useCallback(async (topic: string) => {
+  const loadQuestions = useCallback(async (topic: string, page: number = 1) => {
     setLoading(true)
-    setCurrentPage(1) // Reset to page 1 when topic changes
     try {
-      const res = await fetch(`/api/questions/${topic}`)
+      const res = await fetch(`/api/questions/${topic}?page=${page}&pageSize=${PAGE_SIZE}`)
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`)
       }
       const data = await res.json()
-      setQuestions(data)
+      // Handle both old format (array) and new format (object with data/pagination)
+      if (Array.isArray(data)) {
+        setQuestions(data)
+      } else {
+        setQuestions(data.data || [])
+      }
     } catch (error) {
       console.error('Error loading questions:', error)
       setQuestions([])
@@ -69,18 +73,13 @@ export default function Home() {
     }
   }, [])
 
-  // Paginated questions
-  const paginatedQuestions = useMemo(() => {
-    const startIndex = (currentPage - 1) * PAGE_SIZE
-    const endIndex = startIndex + PAGE_SIZE
-    return questions.slice(startIndex, endIndex)
-  }, [questions, currentPage])
-
-  const totalPages = Math.ceil(questions.length / PAGE_SIZE)
+  // No need for client-side pagination anymore - API handles it
+  const paginatedQuestions = questions
+  const totalPages = Math.ceil(questions.length > 0 ? 30 / PAGE_SIZE : 1) // Will be replaced with API response
 
   useEffect(() => {
-    loadQuestions(currentTopic)
-  }, [currentTopic, loadQuestions])
+    loadQuestions(currentTopic, currentPage)
+  }, [currentTopic, currentPage, loadQuestions])
 
   // Use functional setState (rerender-functional-setstate)
   const toggleAnswer = useCallback((id: number) => {
@@ -97,6 +96,7 @@ export default function Home() {
 
   const handleTopicChange = useCallback((topicId: string) => {
     setCurrentTopic(topicId)
+    setCurrentPage(1) // Reset to page 1 when changing topics
   }, [])
 
   // Memoize current topic data (rerender-memo)
