@@ -16,6 +16,7 @@ const TOPICS = [
   { id: 'oracle', label: 'Oracle DB', color: '#F80000', icon: '🗄️' },
   { id: 'aws', label: 'AWS Cloud', color: '#FF9900', icon: '☁️' },
   { id: 'angular', label: 'Angular', color: '#DD0031', icon: '🅰️' },
+  { id: 'react', label: 'React', color: '#61DAFB', icon: '⚛️' },
   { id: 'kafka', label: 'Kafka', color: '#231F20', icon: '📨' },
   { id: 'java', label: 'Java 21', color: '#007396', icon: '☕' },
   { id: 'redis', label: 'Redis', color: '#DC382D', icon: '⚡' }
