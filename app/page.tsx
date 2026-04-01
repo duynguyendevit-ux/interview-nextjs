@@ -235,7 +235,7 @@ const QuestionCard = memo(({ question, index, levelColors, isOpen, onToggle }: {
               <div className="pt-4 mt-4 bg-[#20201f] -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 rounded-sm border-t border-white/5">
                 <div className="font-manrope text-sm sm:text-base text-[#adaaaa] leading-relaxed">
                   <strong className={`${levelColors.text} font-inter tracking-wide`}>Answer:</strong>
-                  <span className="mt-2 block text-white/90">{question.answer}</span>
+                  <span className="mt-2 block text-white/90 whitespace-pre-wrap">{question.answer}</span>
                 </div>
               </div>
             </motion.div>
