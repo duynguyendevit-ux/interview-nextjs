@@ -44,7 +44,12 @@ export default function SubmitPage() {
       const response = await fetch('/api/questions/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          topic: formData.topic,
+          text: formData.question,
+          level: formData.level,
+          answer: formData.answer,
+        }),
       })
 
       if (!response.ok) {
