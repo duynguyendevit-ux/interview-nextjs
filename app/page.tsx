@@ -48,9 +48,12 @@ export default function Home() {
   const [questions, setQuestions] = useState<Question[]>([])
   const [loading, setLoading] = useState(true)
   const [openAnswers, setOpenAnswers] = useState<Set<number>>(new Set())
+  const [currentPage, setCurrentPage] = useState(1)
+  const PAGE_SIZE = 25
 
   const loadQuestions = useCallback(async (topic: string) => {
     setLoading(true)
+    setCurrentPage(1) // Reset to page 1 when topic changes
     try {
       const res = await fetch(`/api/questions/${topic}`)
       if (!res.ok) {
@@ -65,6 +68,15 @@ export default function Home() {
       setLoading(false)
     }
   }, [])
+
+  // Paginated questions
+  const paginatedQuestions = useMemo(() => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE
+    const endIndex = startIndex + PAGE_SIZE
+    return questions.slice(startIndex, endIndex)
+  }, [questions, currentPage])
+
+  const totalPages = Math.ceil(questions.length / PAGE_SIZE)
 
   useEffect(() => {
     loadQuestions(currentTopic)
@@ -150,7 +162,7 @@ export default function Home() {
               exit={{ opacity: 0 }}
               className="flex flex-col gap-2"
             >
-              {questions.map((q, i) => {
+              {paginatedQuestions.map((q, i) => {
                 const levelColors = LEVEL_COLORS[q.level] || LEVEL_COLORS.basic
                 const isOpen = openAnswers.has(q.id)
                 
@@ -168,6 +180,33 @@ export default function Home() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Pagination */}
+        {!loading && totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-8">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-[#1a1a1a] text-[#adaaaa] rounded-sm hover:bg-[#2c2c2c] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-manrope"
+            >
+              ← Previous
+            </button>
+            
+            <div className="flex items-center gap-2">
+              <span className="text-[#adaaaa] font-manrope text-sm">
+                Page {currentPage} of {totalPages}
+              </span>
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-[#1a1a1a] text-[#adaaaa] rounded-sm hover:bg-[#2c2c2c] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-manrope"
+            >
+              Next →
+            </button>
+          </div>
+        )}
 
         {/* CTA Section */}
         {!loading && questions.length > 0 && <CTASection />}
