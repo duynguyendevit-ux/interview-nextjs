@@ -13,6 +13,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { icon: '📝', label: 'Questions', href: '/' },
+  { icon: '➕', label: 'Submit Question', href: '/submit' },
   { icon: '✓', label: 'Admin Portal', href: '/admin' },
 ]
 
