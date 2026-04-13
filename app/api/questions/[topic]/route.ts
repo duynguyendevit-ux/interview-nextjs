@@ -21,18 +21,27 @@ export async function GET(
       q.topic.toLowerCase().includes(topic.toLowerCase())
     )
     
+    // Map to match frontend interface (text instead of question)
+    const mappedQuestions = topicQuestions.map((q: any) => ({
+      id: q.id,
+      text: q.question,
+      level: q.difficulty,
+      answer: q.answer,
+      topic: q.topic
+    }))
+    
     // Paginate
     const start = (page - 1) * pageSize
     const end = start + pageSize
-    const paginatedQuestions = topicQuestions.slice(start, end)
+    const paginatedQuestions = mappedQuestions.slice(start, end)
     
     return NextResponse.json({
       data: paginatedQuestions,
       pagination: {
         page,
         pageSize,
-        total: topicQuestions.length,
-        totalPages: Math.ceil(topicQuestions.length / pageSize)
+        total: mappedQuestions.length,
+        totalPages: Math.ceil(mappedQuestions.length / pageSize)
       }
     })
   } catch (error) {
