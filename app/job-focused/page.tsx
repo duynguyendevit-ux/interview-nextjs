@@ -61,7 +61,7 @@ export default function JobFocusedPage() {
 
   const fetchQuestions = async () => {
     try {
-      const response = await fetch('/api/questions')
+      const response = await fetch('https://interview-questions-api.dyan79.workers.dev/api/questions')
       const data = await response.json()
       setQuestions(data.questions || [])
     } catch (error) {
