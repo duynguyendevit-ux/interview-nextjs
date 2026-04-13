@@ -4,9 +4,10 @@ const WORKER_API = 'https://interview-questions-api.dyan79.workers.dev/api/quest
 
 export async function GET(
   request: Request,
-  { params }: { params: { topic: string } }
+  { params }: { params: Promise<{ topic: string }> }
 ) {
   try {
+    const { topic } = await params
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
     const pageSize = parseInt(searchParams.get('pageSize') || '25')
@@ -17,7 +18,7 @@ export async function GET(
     
     // Filter by topic
     const topicQuestions = data.questions.filter((q: any) => 
-      q.topic.toLowerCase().includes(params.topic.toLowerCase())
+      q.topic.toLowerCase().includes(topic.toLowerCase())
     )
     
     // Paginate
