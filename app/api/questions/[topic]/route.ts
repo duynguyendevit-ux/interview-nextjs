@@ -26,7 +26,7 @@ export async function GET(
       id: q.id,
       text: q.question,
       level: q.difficulty,
-      answer: q.answer,
+      answer: q.answer.replace(/\\n/g, '\n'), // Convert \n to actual newlines
       topic: q.topic
     }))
     
