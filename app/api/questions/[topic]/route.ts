@@ -26,7 +26,10 @@ export async function GET(
       id: q.id,
       text: q.question,
       level: q.difficulty,
-      answer: q.answer.replace(/\\n/g, '\n'), // Convert \n to actual newlines
+      answer: q.answer
+        .replace(/\\n/g, '\n')  // Convert \n to actual newlines
+        .replace(/\\t/g, '\t')  // Convert \t to tabs
+        .replace(/\\\\/g, '\\'), // Convert \\ to \
       topic: q.topic
     }))
     
