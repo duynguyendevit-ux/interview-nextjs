@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import ReactMarkdown from 'react-markdown'
 
 interface Question {
   id: number
@@ -275,7 +276,23 @@ const QuestionCard = memo(({ question, index, levelColors, isOpen, onToggle }: {
               <div className="pt-4 mt-4 bg-[#20201f] -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 rounded-sm border-t border-white/5">
                 <div className="font-manrope text-sm sm:text-base text-[#adaaaa] leading-relaxed">
                   <strong className={`${levelColors.text} font-inter tracking-wide`}>Answer:</strong>
-                  <span className="mt-2 block text-white/90 whitespace-pre-wrap">{question.answer.replace(/\\n/g, '\n')}</span>
+                  <div className="mt-2 text-white/90 prose prose-invert prose-sm max-w-none">
+                    <ReactMarkdown
+                      components={{
+                        p: ({node, ...props}) => <p className="mb-3" {...props} />,
+                        strong: ({node, ...props}) => <strong className="text-[#ff8aa7] font-bold" {...props} />,
+                        code: ({node, inline, ...props}: any) => 
+                          inline ? 
+                            <code className="bg-[#1a1a1a] px-1.5 py-0.5 rounded text-[#81ecff] font-mono text-xs" {...props} /> :
+                            <code className="block bg-[#1a1a1a] p-3 rounded my-2 overflow-x-auto font-mono text-xs" {...props} />,
+                        ul: ({node, ...props}) => <ul className="list-disc list-inside mb-3 space-y-1" {...props} />,
+                        ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-3 space-y-1" {...props} />,
+                        li: ({node, ...props}) => <li className="ml-2" {...props} />,
+                      }}
+                    >
+                      {question.answer.replace(/\\n/g, '\n')}
+                    </ReactMarkdown>
+                  </div>
                 </div>
               </div>
             </motion.div>
