@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 interface Question {
   id: number
@@ -278,16 +279,22 @@ const QuestionCard = memo(({ question, index, levelColors, isOpen, onToggle }: {
                   <strong className={`${levelColors.text} font-inter tracking-wide`}>Answer:</strong>
                   <div className="mt-2 text-white/90 prose prose-invert prose-sm max-w-none">
                     <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
                       components={{
                         p: ({node, ...props}) => <p className="mb-3" {...props} />,
                         strong: ({node, ...props}) => <strong className="text-[#ff8aa7] font-bold" {...props} />,
                         code: ({node, inline, ...props}: any) => 
                           inline ? 
                             <code className="bg-[#1a1a1a] px-1.5 py-0.5 rounded text-[#81ecff] font-mono text-xs" {...props} /> :
-                            <code className="block bg-[#1a1a1a] p-3 rounded my-2 overflow-x-auto font-mono text-xs" {...props} />,
+                            <code className="block bg-[#1a1a1a] p-3 rounded my-2 overflow-x-auto font-mono text-xs leading-relaxed" {...props} />,
+                        pre: ({node, ...props}) => <pre className="my-3" {...props} />,
                         ul: ({node, ...props}) => <ul className="list-disc list-inside mb-3 space-y-1" {...props} />,
                         ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-3 space-y-1" {...props} />,
                         li: ({node, ...props}) => <li className="ml-2" {...props} />,
+                        h1: ({node, ...props}) => <h1 className="text-xl font-bold mb-2 mt-4" {...props} />,
+                        h2: ({node, ...props}) => <h2 className="text-lg font-bold mb-2 mt-3" {...props} />,
+                        h3: ({node, ...props}) => <h3 className="text-base font-bold mb-2 mt-2" {...props} />,
+                        br: () => <br className="my-1" />,
                       }}
                     >
                       {question.answer.replace(/\\n/g, '\n')}
