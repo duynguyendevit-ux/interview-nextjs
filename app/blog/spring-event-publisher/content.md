@@ -25,15 +25,12 @@ Event-driven patterns are beneficial when:
 
 ```java
 // Event class
+import lombok.Value;
+
+@Value
 public class OrderCreatedEvent {
-    private final Long orderId;
-    private final String customerEmail;
-    
-    public OrderCreatedEvent(Long orderId, String customerEmail) {
-        this.orderId = orderId;
-        this.customerEmail = customerEmail;
-    }
-    // getters...
+    Long orderId;
+    String customerEmail;
 }
 
 // Publisher
@@ -196,6 +193,9 @@ public void publishBatchEvents() {
 
 ```java
 // BAD: Heavy event object
+import lombok.Data;
+
+@Data
 public class OrderEvent {
     private Order order; // Contains entire order with all relations
     private Customer customer; // Full customer object
@@ -203,9 +203,12 @@ public class OrderEvent {
 }
 
 // GOOD: Lightweight event with IDs only
+import lombok.Value;
+
+@Value
 public class OrderEvent {
-    private final Long orderId;
-    private final Long customerId;
+    Long orderId;
+    Long customerId;
     // Listeners fetch full objects only if needed
 }
 ```
