@@ -33,10 +33,10 @@ export default function SpringEventPublisherBlog() {
 
           {/* Content */}
           <div className="bg-[#1a1a1a] p-6 sm:p-8 rounded-sm">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              className="prose prose-invert max-w-none"
-              components={{
+            <div className="prose prose-invert max-w-none">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
                 h1: ({ node, ...props }) => (
                   <h1 className="text-2xl sm:text-3xl font-black font-space-grotesk tracking-tighter text-white mb-4 mt-8 uppercase" {...props} />
                 ),
@@ -97,9 +97,10 @@ export default function SpringEventPublisherBlog() {
                   <a className="text-[#81ecff] hover:text-[#ff8aa7] transition-colors underline" {...props} />
                 ),
               }}
-            >
-              {markdownContent}
-            </ReactMarkdown>
+              >
+                {markdownContent}
+              </ReactMarkdown>
+            </div>
           </div>
 
           {/* Back to Home CTA */}
